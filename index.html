@@ -41,24 +41,6 @@
         .usernamebox {
             text-align: center;
         }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 250px;
-        }
-
-        label {
-            font-size: 16px;
-        }
     </style>
 </head>
 
@@ -68,13 +50,9 @@
             <h3 id="username">Username</h3>
         </div>
     </div>
-    <form id="rewardForm">
-        <div class="form-group">
-            <label for="rewardUrl">রিওয়ার্ড ইউআরএল:</label>
-            <input type="text" id="rewardUrl" placeholder="রিওয়ার্ড ইউআরএল দিন" required>
-        </div>
-        <button type="submit" class="start">রিওয়ার্ড পাঠান</button>
-    </form>
+    <div>
+        <button class="start" type="button" id="startButton">Start</button>
+    </div>
 
     <!-- JavaScript কোড -->
     <script>
@@ -88,8 +66,6 @@
             const user = tg.initDataUnsafe.user;
             if (user && user.username) {
                 document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
-                // ইউজারনেম ফর্মে পূরণ করুন (যদি প্রয়োজন হয়)
-                // document.getElementById('userReward').value = user.username;
             } else {
                 document.getElementById('username').innerText = 'স্বাগতম!';
             }
@@ -97,18 +73,16 @@
             tg.ready();
         });
 
-        document.getElementById('rewardForm').addEventListener('submit', (event) => {
-            event.preventDefault(); // ফর্মের ডিফল্ট আচরণ বন্ধ করুন
-
-            const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি পাওয়া
-            const rewardUrl = document.getElementById('rewardUrl').value; // রিওয়ার্ড ইউআরএল
-
+        document.getElementById('startButton').addEventListener('click', () => {
             // AdsGram এড দেখানোর ফাংশন
             AdController.show().then((result) => {
                 if (result.done) {
                     // ইউজার এডটি শেষ পর্যন্ত দেখেছে
-                    const finalRewardUrl = `${rewardUrl}?userid=${userId}`;
-                    fetch(finalRewardUrl)
+                    const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি
+                    const rewardUrl = `https://test.adsgram.ai/reward?userid=${userId}`; // রিওয়ার্ড ইউআরএল
+
+                    // GET রিকোয়েস্ট পাঠান
+                    fetch(rewardUrl)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
@@ -117,20 +91,20 @@
                         })
                         .then(data => {
                             console.log('Reward request sent:', data);
-                            alert('রিওয়ার্ড সফলভাবে পাঠানো হয়েছে!');
+                            // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
                         })
                         .catch(error => {
                             console.error('Error sending reward request:', error);
-                            alert('রিওয়ার্ড পাঠাতে গিয়ে সমস্যা হয়েছে।');
+                            // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
                         });
                 } else {
                     // ইউজার এডটি সম্পূর্ণভাবে দেখেনি
-                    alert('আপনি এডটি সম্পূর্ণভাবে দেখেননি, রিওয়ার্ড পাওয়া যাবে না।');
+                    // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
                 }
             }).catch((error) => {
                 // এড দেখাতে কোনো সমস্যা হয়েছে
                 console.error('Error showing ad:', error);
-                alert('এড দেখাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
             });
         });
     </script>
