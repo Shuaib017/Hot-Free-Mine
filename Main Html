@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>টেলিগ্রাম মিনি এপ</title>
+  <link rel="stylesheet" href="s.css">
+  <!-- Telegram Web Apps স্ক্রিপ্ট যুক্ত করুন -->
+  <script async src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+  <div class="main">
+    <div class="usernamebox">
+      <h3 id="username">Username</h3>
+    </div>
+  </div>
+  <div>
+    <button class="start" type="button" id="startButton">Start</button>
+  </div>
+
+  <!-- JavaScript কোড -->
+  <script>
+    // Telegram Web App অবজেক্ট অ্যাক্সেস করুন
+    const tg = window.Telegram.WebApp;
+
+    // পেজ লোড হওয়ার পর ইউজার ডেটা পান
+    document.addEventListener('DOMContentLoaded', () => {
+      // Telegram থেকে প্রেরিত ইউজার ডেটা পান
+      const user = tg.initDataUnsafe.user;
+      if (user) {
+        // ইউজারনেম দেখান
+        document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
+      } else {
+        document.getElementById('username').innerText = 'স্বাগতম!';
+      }
+
+      // টুলবার কাস্টমাইজ করুন (যদি চান)
+      tg.ready();
+    });
+
+    // Start বোতাম ক্লিক হ্যান্ডলার
+    document.getElementById('startButton').addEventListener('click', () => {
+      // আপনি এখানে যেকোনো ইভেন্ট হ্যান্ডল করতে পারেন
+      // উদাহরণস্বরূপ, অন্য পেজে নিয়ে যেতে পারেন বা Telegram API ব্যবহার করতে পারেন
+      tg.close(); // মিনি এপ বন্ধ করতে পারেন
+    });
+  </script>
+</body>
+
+</html>
