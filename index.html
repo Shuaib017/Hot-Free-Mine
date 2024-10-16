@@ -42,9 +42,22 @@
             text-align: center;
         }
 
-        .message {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
             font-size: 16px;
-            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        label {
+            font-size: 16px;
         }
     </style>
 </head>
@@ -55,10 +68,15 @@
             <h3 id="username">Username</h3>
         </div>
     </div>
-    <div>
-        <button class="start" type="button" id="startButton">Start</button>
-    </div>
+    <form id="rewardForm">
+        <div class="form-group">
+            <label for="rewardUrl">রিওয়ার্ড ইউআরএল:</label>
+            <input type="text" id="rewardUrl" placeholder="রিওয়ার্ড ইউআরএল দিন" required>
+        </div>
+        <button type="submit" class="start">রিওয়ার্ড পাঠান</button>
+    </form>
 
+    <!-- JavaScript কোড -->
     <script>
         // Telegram Web App অবজেক্ট অ্যাক্সেস করুন
         const tg = window.Telegram.WebApp;
@@ -70,6 +88,8 @@
             const user = tg.initDataUnsafe.user;
             if (user && user.username) {
                 document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
+                // ইউজারনেম ফর্মে পূরণ করুন (যদি প্রয়োজন হয়)
+                // document.getElementById('userReward').value = user.username;
             } else {
                 document.getElementById('username').innerText = 'স্বাগতম!';
             }
@@ -77,16 +97,18 @@
             tg.ready();
         });
 
-        document.getElementById('startButton').addEventListener('click', () => {
+        document.getElementById('rewardForm').addEventListener('submit', (event) => {
+            event.preventDefault(); // ফর্মের ডিফল্ট আচরণ বন্ধ করুন
+
+            const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি পাওয়া
+            const rewardUrl = document.getElementById('rewardUrl').value; // রিওয়ার্ড ইউআরএল
+
             // AdsGram এড দেখানোর ফাংশন
             AdController.show().then((result) => {
                 if (result.done) {
                     // ইউজার এডটি শেষ পর্যন্ত দেখেছে
-                    const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি
-                    const rewardUrl = `https://test.adsgram.ai/reward?userid=${userId}`; // রিওয়ার্ড ইউআরএল
-
-                    // GET রিকোয়েস্ট পাঠান
-                    fetch(rewardUrl)
+                    const finalRewardUrl = `${rewardUrl}?userid=${userId}`;
+                    fetch(finalRewardUrl)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
