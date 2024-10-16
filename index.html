@@ -1,113 +1,51 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>টেলিগ্রাম মিনি এপ</title>
-    <!-- Telegram Web Apps স্ক্রিপ্ট যুক্ত করুন -->
-    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- AdsGram স্ক্রিপ্ট যুক্ত করুন -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বিজ্ঞাপন</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
-            width: 100%;
-            height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 40px;
-            background-color: #f0f0f0; /* ব্যাকগ্রাউন্ড কালার */
-            font-family: Arial, sans-serif; /* ফন্ট ফ্যামিলি */
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
 
-        .start {
-            width: 200px;
-            height: 50px;
-            background: deepskyblue;
-            border: none;
-            font-size: 20px;
+        #adButton {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #00bfff;
             color: white;
-            cursor: pointer; /* কার্সর পরিবর্তন */
-            border-radius: 5px; /* কোণ গোলাকার */
-            transition: background 0.3s; /* মসৃণ অ্যানিমেশন */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .start:hover {
-            background: dodgerblue; /* হোভার কালার পরিবর্তন */
-        }
-
-        .usernamebox {
-            text-align: center;
+        #adButton:hover {
+            background-color: #007acc;
         }
     </style>
 </head>
-
 <body>
-    <div class="main">
-        <div class="usernamebox">
-            <h3 id="username">Username</h3>
-        </div>
-    </div>
-    <div>
-        <button class="start" type="button" id="startButton">Start</button>
-    </div>
 
-    <!-- JavaScript কোড -->
+    <button id="adButton">বিজ্ঞাপন দেখুন</button>
+
     <script>
-        // Telegram Web App অবজেক্ট অ্যাক্সেস করুন
-        const tg = window.Telegram.WebApp;
-
-        // AdsGram SDK ইনিশিয়ালাইজ করুন
         const AdController = window.Adsgram.init({ blockId: "4310" });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = tg.initDataUnsafe.user;
-            if (user && user.username) {
-                document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
-            } else {
-                document.getElementById('username').innerText = 'স্বাগতম!';
-            }
-
-            tg.ready();
-        });
-
-        document.getElementById('startButton').addEventListener('click', () => {
-            // AdsGram এড দেখানোর ফাংশন
+        document.getElementById('adButton').addEventListener('click', function() {
             AdController.show().then((result) => {
-                if (result.done) {
-                    // ইউজার এডটি শেষ পর্যন্ত দেখেছে
-                    const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি
-                    const rewardUrl = `https://test.adsgram.ai/reward?userid=${userId}`; // রিওয়ার্ড ইউআরএল
-
-                    // GET রিকোয়েস্ট পাঠান
-                    fetch(rewardUrl)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Reward request sent:', data);
-                            // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
-                        })
-                        .catch(error => {
-                            console.error('Error sending reward request:', error);
-                            // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
-                        });
-                } else {
-                    // ইউজার এডটি সম্পূর্ণভাবে দেখেনি
-                    // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
-                }
-            }).catch((error) => {
-                // এড দেখাতে কোনো সমস্যা হয়েছে
-                console.error('Error showing ad:', error);
-                // এখানে কোনো মেসেজ প্রদর্শন করা হবে না
+                // বিজ্ঞাপন সফলভাবে শেষ হলে কিছু করার দরকার নেই
+            }).catch((result) => {
+                // যদি বিজ্ঞাপন লোড না হয় বা স্কিপ করা হয়, কিছু করার দরকার নেই
             });
         });
     </script>
-</body>
 
+</body>
 </html>
