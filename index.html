@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বিজ্ঞাপন</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -16,7 +18,12 @@
             background-color: #f5f5f5;
         }
 
-        #adButton {
+        #username {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .button {
             padding: 15px 30px;
             font-size: 18px;
             background-color: #00bfff;
@@ -24,25 +31,62 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-bottom: 10px;
         }
 
-        #adButton:hover {
+        .button:hover {
             background-color: #007acc;
+        }
+
+        #checkButton {
+            background-color: green;
+        }
+
+        #checkButton:hover {
+            background-color: darkgreen;
         }
     </style>
 </head>
 <body>
 
-    <button id="adButton">বিজ্ঞাপন দেখুন</button>
+    <div id="username">ইউজারনেম লোড হচ্ছে...</div>
+    <button id="joinButton" class="button">টেলিগ্রাম চ্যানেলে যোগ দিন</button>
+    <button id="checkButton" class="button" style="display: none;">চেক করুন</button>
 
     <script>
-        const AdController = window.Adsgram.init({ blockId: "4310" });
+        const tg = window.Telegram.WebApp;
+        const user = tg.initDataUnsafe.user;
 
-        document.getElementById('adButton').addEventListener('click', function() {
-            AdController.show().then((result) => {
-                // বিজ্ঞাপন সফলভাবে শেষ হলে কিছু করার দরকার নেই
-            }).catch((result) => {
-                // যদি বিজ্ঞাপন লোড না হয় বা স্কিপ করা হয়, কিছু করার দরকার নেই
+        // ইউজারনেম দেখানো
+        if (user && user.username) {
+            document.getElementById('username').innerText = `স্বাগতম, @${user.username}`;
+        } else {
+            document.getElementById('username').innerText = 'স্বাগতম!';
+        }
+
+        // টেলিগ্রাম চ্যানেলে যোগ দিতে রিডাইরেক্ট করা
+        document.getElementById('joinButton').addEventListener('click', function() {
+            window.open('https://t.me/your-channel-name', '_blank'); // এখানে আপনার টেলিগ্রাম চ্যানেলের লিঙ্ক দিন
+            document.getElementById('checkButton').style.display = 'block'; // চেক বাটন শো হবে
+        });
+
+        // চেক বাটন ক্লিক করা হলে যোগদান চেক
+        document.getElementById('checkButton').addEventListener('click', function() {
+            const botToken = '7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk'; // এখানে আপনার বটের টোকেন বসান
+            const chatId = user.id; // ইউজার আইডি টেলিগ্রাম থেকে
+
+            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@your-channel-name&user_id=${chatId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator') {
+                    alert('সফলভাবে চ্যানেলে যোগদান করেছেন!');
+                } else {
+                    alert('আপনি চ্যানেলে যোগদান করেননি।');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('কিছু সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।');
             });
         });
     </script>
