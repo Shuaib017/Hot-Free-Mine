@@ -66,16 +66,16 @@
 
         // টেলিগ্রাম চ্যানেলে যোগ দিতে রিডাইরেক্ট করা
         document.getElementById('joinButton').addEventListener('click', function() {
-            window.open('https://t.me/freewatcoinmining', '_blank'); // এখানে আপনার টেলিগ্রাম চ্যানেলের লিঙ্ক দিন
+            window.open('https://t.me/freewatcoinmining', '_blank'); // এখানে আপনার টেলিগ্রাম চ্যানেলের লিঙ্ক দেওয়া হয়েছে
             document.getElementById('checkButton').style.display = 'block'; // চেক বাটন শো হবে
         });
 
         // চেক বাটন ক্লিক করা হলে যোগদান চেক
         document.getElementById('checkButton').addEventListener('click', function() {
-            const botToken = '7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk'; // এখানে আপনার বটের টোকেন বসান
+            const botToken = '7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk'; // আপনার টেলিগ্রাম বটের টোকেন
             const chatId = user.id; // ইউজার আইডি টেলিগ্রাম থেকে
 
-            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@your-channel-name&user_id=${chatId}`)
+            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@freewatcoinmining&user_id=${chatId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator') {
