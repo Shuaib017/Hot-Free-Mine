@@ -2,79 +2,116 @@
 <html lang="bn">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>টেলিগ্রাম মিনি এপ</title>
-  <link rel="stylesheet" href="s.css">
-  <!-- Telegram Web Apps স্ক্রিপ্ট যুক্ত করুন -->
-  <script async src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 40px;
-      background-color: #f0f0f0; /* ব্যাকগ্রাউন্ড কালার যোগ করুন */
-      font-family: Arial, sans-serif; /* ফন্ট যোগ করুন */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>টেলিগ্রাম মিনি এপ</title>
+    <!-- Telegram Web Apps স্ক্রিপ্ট যুক্ত করুন -->
+    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- AdsGram স্ক্রিপ্ট যুক্ত করুন -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <style>
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 40px;
+            background-color: #f0f0f0; /* ব্যাকগ্রাউন্ড কালার */
+            font-family: Arial, sans-serif; /* ফন্ট ফ্যামিলি */
+        }
 
-    .start {
-      width: 200px;
-      height: 50px;
-      background: deepskyblue;
-      border: none;
-      font-size: 20px;
-      color: white;
-      cursor: pointer; /* কার্সর পরিবর্তন করুন */
-      border-radius: 5px; /* কোণ গোলাকার করুন */
-      transition: background 0.3s; /* মসৃণ অ্যানিমেশন যোগ করুন */
-    }
+        .start {
+            width: 200px;
+            height: 50px;
+            background: deepskyblue;
+            border: none;
+            font-size: 20px;
+            color: white;
+            cursor: pointer; /* কার্সর পরিবর্তন */
+            border-radius: 5px; /* কোণ গোলাকার */
+            transition: background 0.3s; /* মসৃণ অ্যানিমেশন */
+        }
 
-    .start:hover {
-      background: dodgerblue; /* হোভার করলে কালার পরিবর্তন */
-    }
-  </style>
+        .start:hover {
+            background: dodgerblue; /* হোভার কালার পরিবর্তন */
+        }
+
+        .usernamebox {
+            text-align: center;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="main">
-    <div class="usernamebox">
-      <h3 id="username">Username</h3>
+    <div class="main">
+        <div class="usernamebox">
+            <h3 id="username">Username</h3>
+        </div>
     </div>
-  </div>
-  <div>
-    <button class="start" type="button" id="startButton">Start</button>
-  </div>
+    <div>
+        <button class="start" type="button" id="startButton">Start</button>
+    </div>
 
-  <!-- JavaScript কোড -->
-  <script>
-    // Telegram Web App অবজেক্ট অ্যাক্সেস করুন
-    const tg = window.Telegram.WebApp;
+    <script>
+        // Telegram Web App অবজেক্ট অ্যাক্সেস করুন
+        const tg = window.Telegram.WebApp;
 
-    // পেজ লোড হওয়ার পর ইউজার ডেটা পান
-    document.addEventListener('DOMContentLoaded', () => {
-      // Telegram থেকে প্রেরিত ইউজার ডেটা পান
-      const user = tg.initDataUnsafe.user;
-      if (user) {
-        // ইউজারনেম দেখান
-        document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
-      } else {
-        document.getElementById('username').innerText = 'স্বাগতম!';
-      }
+        // AdsGram SDK ইনিশিয়ালাইজ করুন
+        const AdController = window.Adsgram.init({ blockId: "4310" });
 
-      // টুলবার কাস্টমাইজ করুন (যদি চান)
-      tg.ready();
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = tg.initDataUnsafe.user;
+            if (user && user.username) {
+                document.getElementById('username').innerText = `স্বাগতম, @${user.username}!`;
+            } else {
+                document.getElementById('username').innerText = 'স্বাগতম!';
+            }
 
-    // Start বোতাম ক্লিক হ্যান্ডলার
-    document.getElementById('startButton').addEventListener('click', () => {
-      // এখানে অন্য কোনো ইভেন্ট হ্যান্ডল করতে পারেন
-      tg.close(); // মিনি অ্যাপ বন্ধ করতে পারেন
-    });
-  </script>
+            tg.ready();
+        });
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            // AdsGram এড দেখানোর ফাংশন
+            AdController.show().then((result) => {
+                if (result.done) {
+                    // ইউজার এডটি শেষ পর্যন্ত দেখেছে
+                    const userId = tg.initDataUnsafe.user.id; // ইউজারের টেলিগ্রাম আইডি
+                    const rewardUrl = `https://test.adsgram.ai/reward?userid=${userId}`; // রিওয়ার্ড ইউআরএল
+
+                    // GET রিকোয়েস্ট পাঠান
+                    fetch(rewardUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Reward request sent:', data);
+                            alert('রিওয়ার্ড সফলভাবে পাঠানো হয়েছে!');
+                        })
+                        .catch(error => {
+                            console.error('Error sending reward request:', error);
+                            alert('রিওয়ার্ড পাঠাতে গিয়ে সমস্যা হয়েছে।');
+                        });
+                } else {
+                    // ইউজার এডটি সম্পূর্ণভাবে দেখেনি
+                    alert('আপনি এডটি সম্পূর্ণভাবে দেখেননি, রিওয়ার্ড পাওয়া যাবে না।');
+                }
+            }).catch((error) => {
+                // এড দেখাতে কোনো সমস্যা হয়েছে
+                console.error('Error showing ad:', error);
+                alert('এড দেখাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+            });
+        });
+    </script>
 </body>
 
 </html>
