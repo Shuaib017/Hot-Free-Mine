@@ -3,17 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বিজ্ঞাপন</title>
+    <title>টেলিগ্রাম মিনি এপ</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
+        }
+
+        #telegramUsername {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
         }
 
         #adButton {
@@ -33,11 +41,27 @@
 </head>
 <body>
 
+    <div id="telegramUsername">টেলিগ্রাম ইউজারনেম লোড হচ্ছে...</div>
     <button id="adButton">বিজ্ঞাপন দেখুন</button>
 
     <script>
+        // টেলিগ্রাম ওয়েব অ্যাপ API ইনিশিয়ালাইজ করা হচ্ছে
+        const tg = window.Telegram.WebApp;
+
+        // ইউজার তথ্য বের করা হচ্ছে
+        const username = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.username : null;
+
+        // ইউজারনেম প্রদর্শন
+        if (username) {
+            document.getElementById('telegramUsername').innerText = `আপনার টেলিগ্রাম ইউজারনেম: @${username}`;
+        } else {
+            document.getElementById('telegramUsername').innerText = 'ইউজারনেম পাওয়া যায়নি';
+        }
+
+        // বিজ্ঞাপন কন্ট্রোলার ইনিশিয়ালাইজ করা হচ্ছে
         const AdController = window.Adsgram.init({ blockId: "4310" });
 
+        // বিজ্ঞাপন দেখানোর জন্য বাটন ইভেন্ট হ্যান্ডলার
         document.getElementById('adButton').addEventListener('click', function() {
             AdController.show().then((result) => {
                 // বিজ্ঞাপন সফলভাবে শেষ হলে কিছু করার দরকার নেই
