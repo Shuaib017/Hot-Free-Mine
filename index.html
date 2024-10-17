@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বিজ্ঞাপন</title>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -16,12 +16,7 @@
             background-color: #f5f5f5;
         }
 
-        #username {
-            font-size: 22px;
-            margin-bottom: 20px;
-        }
-
-        #checkButton, #joinButton {
+        #adButton {
             padding: 15px 30px;
             font-size: 18px;
             background-color: #00bfff;
@@ -29,78 +24,27 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px;
         }
 
-        #checkButton:hover, #joinButton:hover {
+        #adButton:hover {
             background-color: #007acc;
-        }
-
-        #checkButton {
-            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="username"></div>
-    <button id="joinButton" style="display:none;">চ্যানেলে জয়েন করুন</button>
-    <button id="checkButton" style="display:none;">চেক করুন</button>
+    <button id="adButton">বিজ্ঞাপন দেখুন</button>
 
     <script>
-        const botToken = "7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk"; // আপনার টোকেন
-        const chatId = "@freewatcoinmining"; // আপনার চ্যানেল আইডি
-        const userId = YOUR_TELEGRAM_USER_ID; // আপনার ইউজারের আইডি (বটের মাধ্যমে পাওয়া)
+        const AdController = window.Adsgram.init({ blockId: "4310" });
 
-        // ইউজারের চ্যানেলে যোগদানের তথ্য চেক করা
-        function checkUserJoined() {
-            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok && (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator')) {
-                        alert('সফলভাবে চ্যানেলে যোগদান করেছেন!');
-                    } else {
-                        alert('আপনি চ্যানেলে যোগদান করেননি।');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('কিছু সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।');
-                });
-        }
-
-        // ইউজারনেম দেখানোর জন্য টোকেন দিয়ে ইউজারের তথ্য আনুন
-        function loadUsername() {
-            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        const username = data.result.user.username || 'ইউজারনেম পাওয়া যায়নি';
-                        document.getElementById('username').innerText = `ইউজার: @${username}`;
-                        document.getElementById('joinButton').style.display = 'block'; // জয়েন বাটন দেখান
-                    } else {
-                        document.getElementById('username').innerText = 'ইউজারনেম লোড করতে ব্যর্থ।';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('username').innerText = 'ইউজারনেম লোড করতে ব্যর্থ।';
-                });
-        }
-
-        // চ্যানেলে জয়েন বাটন
-        document.getElementById('joinButton').addEventListener('click', function() {
-            window.open(`https://t.me/freewatcoinmining`, '_blank');
-            document.getElementById('checkButton').style.display = 'block'; // চেক বাটন দেখান
+        document.getElementById('adButton').addEventListener('click', function() {
+            AdController.show().then((result) => {
+                // বিজ্ঞাপন সফলভাবে শেষ হলে কিছু করার দরকার নেই
+            }).catch((result) => {
+                // যদি বিজ্ঞাপন লোড না হয় বা স্কিপ করা হয়, কিছু করার দরকার নেই
+            });
         });
-
-        // চ্যানেলে জয়েন চেক করা
-        document.getElementById('checkButton').addEventListener('click', function() {
-            checkUserJoined(); // জয়েন চেক করার জন্য ফাংশন কল
-        });
-
-        // স্ক্রিপ্ট লোডের সময় ইউজারনেম লোড করার চেষ্টা করা
-        loadUsername();
     </script>
 
 </body>
