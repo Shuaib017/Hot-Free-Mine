@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বিজ্ঞাপন</title>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
             display: flex;
@@ -22,7 +21,7 @@
             margin-bottom: 20px;
         }
 
-        #checkButton {
+        #checkButton, #joinButton {
             padding: 15px 30px;
             font-size: 18px;
             background-color: #00bfff;
@@ -30,65 +29,35 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 10px;
         }
 
-        #checkButton:hover {
+        #checkButton:hover, #joinButton:hover {
             background-color: #007acc;
         }
 
-        #joinButton {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        #checkButton {
             display: none;
-        }
-
-        #joinButton:hover {
-            background-color: #218838;
         }
     </style>
 </head>
 <body>
 
     <div id="username"></div>
-    <button id="joinButton">চ্যানেলে জয়েন করুন</button>
+    <button id="joinButton" style="display:none;">চ্যানেলে জয়েন করুন</button>
     <button id="checkButton" style="display:none;">চেক করুন</button>
 
     <script>
-        const botToken = "7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk";
-        const chatId = "@freewatcoinmining";
-        const userId = 123456789; // এখানে ইউজারের টেলিগ্রাম আইডি বসান
+        const botToken = "7808517576:AAH0SdlK48jsSG2c6X1c1WdtR3k27HLKMvk"; // আপনার টোকেন
+        const chatId = "@freewatcoinmining"; // আপনার চ্যানেল আইডি
+        const userId = YOUR_TELEGRAM_USER_ID; // আপনার ইউজারের আইডি (বটের মাধ্যমে পাওয়া)
 
-        // ইউজারের নাম লোড করার জন্য API কল
-        fetch(`https://api.telegram.org/bot${botToken}/getChat?chat_id=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                // ইউজারনেম সরাসরি প্রদর্শন
-                const username = data.result.username || 'ইউজারনেম পাওয়া যায়নি';
-                document.getElementById('username').innerText = `ইউজার: @${username}`;
-                document.getElementById('joinButton').style.display = 'block'; // জয়েন বাটন দেখান
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('username').innerText = 'ইউজারনেম লোড করতে ব্যর্থ।';
-            });
-
-        // চ্যানেলে জয়েন বাটনে ক্লিক করলে টেলিগ্রাম চ্যানেল খুলবে
-        document.getElementById('joinButton').addEventListener('click', function() {
-            window.open('https://t.me/freewatcoinmining', '_blank');
-            document.getElementById('checkButton').style.display = 'block'; // চেক বাটন দেখান
-        });
-
-        // চ্যানেলে জয়েন চেক করা
-        document.getElementById('checkButton').addEventListener('click', function() {
+        // ইউজারের চ্যানেলে যোগদানের তথ্য চেক করা
+        function checkUserJoined() {
             fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${userId}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator') {
+                    if (data.ok && (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator')) {
                         alert('সফলভাবে চ্যানেলে যোগদান করেছেন!');
                     } else {
                         alert('আপনি চ্যানেলে যোগদান করেননি।');
@@ -98,7 +67,40 @@
                     console.error('Error:', error);
                     alert('কিছু সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।');
                 });
+        }
+
+        // ইউজারনেম দেখানোর জন্য টোকেন দিয়ে ইউজারের তথ্য আনুন
+        function loadUsername() {
+            fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        const username = data.result.user.username || 'ইউজারনেম পাওয়া যায়নি';
+                        document.getElementById('username').innerText = `ইউজার: @${username}`;
+                        document.getElementById('joinButton').style.display = 'block'; // জয়েন বাটন দেখান
+                    } else {
+                        document.getElementById('username').innerText = 'ইউজারনেম লোড করতে ব্যর্থ।';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('username').innerText = 'ইউজারনেম লোড করতে ব্যর্থ।';
+                });
+        }
+
+        // চ্যানেলে জয়েন বাটন
+        document.getElementById('joinButton').addEventListener('click', function() {
+            window.open(`https://t.me/freewatcoinmining`, '_blank');
+            document.getElementById('checkButton').style.display = 'block'; // চেক বাটন দেখান
         });
+
+        // চ্যানেলে জয়েন চেক করা
+        document.getElementById('checkButton').addEventListener('click', function() {
+            checkUserJoined(); // জয়েন চেক করার জন্য ফাংশন কল
+        });
+
+        // স্ক্রিপ্ট লোডের সময় ইউজারনেম লোড করার চেষ্টা করা
+        loadUsername();
     </script>
 
 </body>
